@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
+import os
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -15,3 +16,11 @@ class UserOut(BaseModel):
 
     class Config:
         from_attributes = True  # this allows ORM mode (SQLAlchemy → Pydantic)
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"

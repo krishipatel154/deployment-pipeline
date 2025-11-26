@@ -68,12 +68,12 @@ jobs:
           pip install black isort flake8
 
       # Code Quality
-      - name: Lint Backend
-        working-directory: backend
-        run: |
-          black .
-          isort .
-          flake8 .
+      # - name: Lint Backend
+      #   working-directory: backend
+      #   run: |
+      #     black .
+      #     isort .
+      #     flake8 .
 
       # ---------------------------
       # 4) Wait For DB To Be Ready

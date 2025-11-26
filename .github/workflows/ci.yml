@@ -98,4 +98,4 @@ jobs:
       # 6) Build Docker Images
       # ---------------------------
       - name: Build Docker Images
-        run: docker-compose build
+        run: docker-compose up --build

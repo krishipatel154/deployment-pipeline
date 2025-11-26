@@ -65,7 +65,7 @@ jobs:
         working-directory: backend
         run: |
           pip install -r requirements.txt
-          pip install black isort flake8
+          pip install black isort flake8 pytest
 
       # Code Quality
       # - name: Lint Backend

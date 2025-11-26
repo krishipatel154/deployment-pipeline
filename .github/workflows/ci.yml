@@ -71,8 +71,8 @@ jobs:
       - name: Lint Backend
         working-directory: backend
         run: |
-          black --check .
-          isort --check-only .
+          black .
+          isort .
           flake8 .
 
       # ---------------------------

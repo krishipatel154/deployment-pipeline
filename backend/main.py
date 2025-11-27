@@ -39,7 +39,7 @@ app.add_middleware(
 )
 
 
-@app.post("/signup", response_model=UserOut, 
+@app.post("/signup", response_model=UserOut,
           status_code=status.HTTP_201_CREATED)
 async def signup(user: UserCreate, db: AsyncSession = Depends(get_db)):
     db_user = await create_user(db, user)
@@ -57,13 +57,13 @@ async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
 
     if not user:
         raise HTTPException(
-            status_code=401, 
+            status_code=401,
             detail="Invalid email or password"
         )
 
     if not verify_password(data.password, user.hashed_password):
         raise HTTPException(
-            status_code=401, 
+            status_code=401,
             detail="Invalid email or password"
         )
 

@@ -5,8 +5,6 @@ from database import get_db, create_tables
 from schemas.user import UserCreate, UserOut
 from crud.user import create_user
 from contextlib import asynccontextmanager
-# from fastapi.staticfiles import StaticFiles
-# from fastapi.responses import FileResponse
 from schemas.user import LoginRequest, TokenResponse
 from crud.user import get_user_by_email
 from utils import verify_password, create_access_token
@@ -41,7 +39,8 @@ app.add_middleware(
 )
 
 
-@app.post("/signup", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+@app.post("/signup", response_model=UserOut, 
+          status_code=status.HTTP_201_CREATED)
 async def signup(user: UserCreate, db: AsyncSession = Depends(get_db)):
     db_user = await create_user(db, user)
     if not db_user:
@@ -57,10 +56,12 @@ async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     user = await get_user_by_email(db, data.email)
 
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, 
+                            detail="Invalid email or password")
 
     if not verify_password(data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, 
+                            detail="Invalid email or password")
 
     # Create JWT token
     token = create_access_token({"sub": str(user.id)})

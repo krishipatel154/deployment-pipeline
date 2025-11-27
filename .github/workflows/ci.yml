@@ -159,3 +159,71 @@ jobs:
         with:
           name: frontend-dist
           path: frontend/dist
+    # -------------------------------
+  # 2) Backend Pipeline
+  # -------------------------------
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd="pg_isready -U test -d testdb"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      # 1) Checkout code
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      # 2) Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # 3) Install Backend Dependencies
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install mypy flake8 pytest pytest-asyncio httpx
+
+      # 4) Lint Backend Code
+      - name: Lint Backend
+        run: flake8 .
+
+      # 5) Type Check Backend
+      - name: Type Check Backend
+        run: mypy .
+
+      # 6) Wait for PostgreSQL
+      - name: Wait for Postgres
+        run: |
+          for i in {1..15}; do
+            pg_isready -h localhost -p 5432 && break
+            sleep 2
+          done
+
+      # 7) Run Backend Tests
+      - name: Run Backend Tests
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/testdb
+        run: pytest -q
+
+      # 8) Build Docker Image
+      - name: Build Backend Docker Image
+        run: docker build -t backend-ci-test .

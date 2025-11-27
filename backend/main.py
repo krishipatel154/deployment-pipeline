@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
     # Shutdown: cleanup if needed
 
 app = FastAPI(
-    title="Website Builder AI", 
+    title="Website Builder AI",
     version="0.1.0",
     lifespan=lifespan
 )
@@ -56,12 +56,16 @@ async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     user = await get_user_by_email(db, data.email)
 
     if not user:
-        raise HTTPException(status_code=401, 
-                            detail="Invalid email or password")
+        raise HTTPException(
+            status_code=401, 
+            detail="Invalid email or password"
+        )
 
     if not verify_password(data.password, user.hashed_password):
-        raise HTTPException(status_code=401, 
-                            detail="Invalid email or password")
+        raise HTTPException(
+            status_code=401, 
+            detail="Invalid email or password"
+        )
 
     # Create JWT token
     token = create_access_token({"sub": str(user.id)})

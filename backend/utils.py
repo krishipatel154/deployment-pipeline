@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
-from datetime import datetime, timedelta   # ← REQUIRED
+from datetime import datetime, timedelta
 import os
-import jwt    
+import jwt
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -12,6 +12,7 @@ def hash_password(password: str) -> str:
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+
 
 # JWT CREATION ------------------------------------
 SECRET_KEY = os.getenv("SECRET_KEY")

@@ -3,7 +3,7 @@ from sqlalchemy import select
 from models.user import User
 from schemas.user import UserCreate
 from utils import hash_password
-import os
+
 
 async def create_user(db: AsyncSession, user: UserCreate):
     # Check if user already exists
@@ -18,6 +18,7 @@ async def create_user(db: AsyncSession, user: UserCreate):
     await db.commit()
     await db.refresh(db_user)
     return db_user
+
 
 async def get_user_by_email(db: AsyncSession, email: str):
     query = select(User).where(User.email == email)

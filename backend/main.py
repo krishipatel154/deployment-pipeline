@@ -5,12 +5,12 @@ from database import get_db, create_tables
 from schemas.user import UserCreate, UserOut
 from crud.user import create_user
 from contextlib import asynccontextmanager
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-import os
+# from fastapi.staticfiles import StaticFiles
+# from fastapi.responses import FileResponse
 from schemas.user import LoginRequest, TokenResponse
 from crud.user import get_user_by_email
 from utils import verify_password, create_access_token
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -24,6 +24,7 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan
 )
+
 
 # Add CORS middleware
 app.add_middleware(
@@ -39,6 +40,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.post("/signup", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def signup(user: UserCreate, db: AsyncSession = Depends(get_db)):
     db_user = await create_user(db, user)
@@ -48,6 +50,7 @@ async def signup(user: UserCreate, db: AsyncSession = Depends(get_db)):
             detail="Email already registered"
         )
     return db_user
+
 
 @app.post("/login", response_model=TokenResponse)
 async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
@@ -63,6 +66,7 @@ async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     token = create_access_token({"sub": str(user.id)})
 
     return TokenResponse(access_token=token)
+
 
 @app.get("/")
 async def root():

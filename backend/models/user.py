@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
-import os
 
 Base = declarative_base()
+
 
 class User(Base):
     __tablename__ = "users"

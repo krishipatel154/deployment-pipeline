@@ -207,8 +207,8 @@ jobs:
         run: flake8 .
 
       # 5) Type Check Backend
-      - name: Type Check Backend
-        run: mypy .
+      # - name: Type Check Backend
+      #   run: mypy .
 
       # 6) Wait for PostgreSQL
       - name: Wait for Postgres

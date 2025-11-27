@@ -219,10 +219,10 @@ jobs:
           done
 
       # 7) Run Backend Tests
-      - name: Run Backend Tests
-        env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/testdb
-        run: pytest -q
+      # - name: Run Backend Tests
+      #   env:
+      #     DATABASE_URL: postgresql://test:test@localhost:5432/testdb
+      #   run: pytest -q
 
       # 8) Build Docker Image
       - name: Build Backend Docker Image

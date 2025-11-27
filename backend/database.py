@@ -1,23 +1,29 @@
+# database.py
+import os
+from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-import os
 from models.user import Base
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+db_url = os.getenv("DATABASE_URL")
+if db_url is None:
+    raise ValueError("DATABASE_URL is missing in environment")
+
+DATABASE_URL: str = db_url
 
 engine = create_async_engine(DATABASE_URL, echo=True)
-async_session = sessionmaker(
-    engine,
+
+AsyncSessionLocal = sessionmaker(
+    bind=engine,
     class_=AsyncSession,
-    expire_on_commit=False
+    expire_on_commit=False,
 )
 
 
 async def get_db():
-    async with async_session() as session:
+    async with AsyncSessionLocal() as session:
         yield session
 
 

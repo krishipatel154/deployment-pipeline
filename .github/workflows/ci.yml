@@ -1,0 +1,127 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+  push:
+    branches:
+      - develop
+      - feature/**
+
+jobs:
+
+  # -------------------------------
+  # 1) Frontend Pipeline
+  # -------------------------------
+  frontend-ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      # 1) Checkout code
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      # 2) Setup Node with caching
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # 3) Install dependencies
+      - name: Install Dependencies
+        run: npm ci
+
+      # 4) Lint check
+      - name: Lint Code
+        run: npm run lint
+
+      # 5) Run Tests using Vitest (CI Mode)
+      - name: Run Tests
+        run: npm run test:ci
+
+      # 7) Build App
+      - name: Build App
+        run: npm run build
+
+      - name: Build Frontend Docker Image
+        run: docker build -t frontend-ci-test .
+        
+      # 8) Upload Build Artifact
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+    # -------------------------------
+  # 2) Backend Pipeline
+  # -------------------------------
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd="pg_isready -U test -d testdb"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      # 1) Checkout code
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      # 2) Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # 3) Install Backend Dependencies
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install mypy flake8 pytest pytest-asyncio httpx
+
+      # 4) Lint Backend Code
+      - name: Lint Backend
+        run: flake8 .
+
+      # 5) Type Check Backend
+      # - name: Type Check Backend
+      #   run: mypy .
+
+      # 6) Wait for PostgreSQL
+      - name: Wait for Postgres
+        run: |
+          for i in {1..15}; do
+            pg_isready -h localhost -p 5432 && break
+            sleep 2
+          done
+
+      # 7) Run Backend Tests
+      # - name: Run Backend Tests
+      #   env:
+      #     DATABASE_URL: postgresql://test:test@localhost:5432/testdb
+      #   run: pytest -q
+
+      # 8) Build Docker Image
+      - name: Build Backend Docker Image
+        run: docker build -t backend-ci-test .

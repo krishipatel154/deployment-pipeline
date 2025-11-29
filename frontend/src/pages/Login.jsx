@@ -26,7 +26,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/login",
+        "http://65.2.121.160:5173/login",
         {
           email: formData.email,
           password: formData.password,

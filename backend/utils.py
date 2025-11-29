@@ -3,6 +3,8 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import os
 import jwt
+from dotenv import load_dotenv
+load_dotenv()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

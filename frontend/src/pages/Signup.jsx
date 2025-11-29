@@ -33,7 +33,7 @@ export default function Signup() {
     setError('');
 
     try {
-      const response = await axios.post('http://65.2.121.160:8000/signup', {
+      const response = await axios.post('http://3.110.118.71:8000/signup', {
         email: formData.email,
         password: formData.password
       });

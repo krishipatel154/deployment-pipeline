@@ -17,6 +17,7 @@ async def lifespan(app: FastAPI):
     yield
     # Shutdown: cleanup if needed
 
+
 app = FastAPI(
     title="Website Builder AI",
     version="0.1.0",
@@ -38,6 +39,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.post("/signup", response_model=UserOut,
           status_code=status.HTTP_201_CREATED)

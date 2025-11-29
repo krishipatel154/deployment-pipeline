@@ -35,7 +35,7 @@ jobs:
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_PATH }}
 
       # -------------------------
-      # 4) Run deployment steps on EC2
+      # 4) Run deployment steps on EC2 - EC2_HOST = ip
       # -------------------------
       - name: Deploy on EC2
         run: |

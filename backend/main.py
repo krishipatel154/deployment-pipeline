@@ -1,5 +1,6 @@
 # main.py
-from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Form
+from fastapi import FastAPI, Depends, HTTPException, status, File
+from fastapi import UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db, create_tables
@@ -48,14 +49,18 @@ app.add_middleware(
 # ──────────────────────────────────────────────────────────────
 # SIGNUP WITH OPTIONAL PROFILE PICTURE (S3)
 # ──────────────────────────────────────────────────────────────
-@app.post("/signup", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+@app.post(
+        "/signup", 
+        response_model=UserOut, 
+        status_code=status.HTTP_201_CREATED
+)
 async def signup(
     email: str = Form(...),
     password: str = Form(...),
     profile_pic: UploadFile = File(None),   # ← Optional file upload
     db: AsyncSession = Depends(get_db)
 ):
-    # Create the Pydantic model instance (profile_pic will be None or S3 URL later)
+#Create the Pydantic model instance(profile_pic will be None or S3 URL later)
     user_in = UserCreate(email=email, password=password)
 
     db_user = await create_user(db, user_in, profile_pic_file=profile_pic)
@@ -72,8 +77,14 @@ async def signup(
 async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     user = await get_user_by_email(db, data.email)
 
-    if not user or not verify_password(data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+    if not user or not verify_password(
+        data.password, 
+        user.hashed_password
+    ):
+        raise HTTPException(
+            status_code=401, 
+            detail="Invalid email or password"
+        )
 
     token = create_access_token({"sub": str(user.id)})
     return TokenResponse(access_token=token)

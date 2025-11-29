@@ -19,6 +19,6 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
-    
+
     # ← NEW FIELD
     profile_pic: Mapped[str | None] = mapped_column(String, nullable=True)

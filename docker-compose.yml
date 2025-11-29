@@ -7,7 +7,7 @@ services:
     build: ./backend # Look for Dockerfile in the current directory
     container_name: backend
     restart: always
-    env_file: 
+    env_file:
       - ./backend/.env
     ports:
       - "8000:8000" # Map host port 5000 to container port 5000

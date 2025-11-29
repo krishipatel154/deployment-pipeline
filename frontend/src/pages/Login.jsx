@@ -26,7 +26,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "http://65.2.121.160:5173/login",
+        "http://65.2.121.160:8000/login",
         {
           email: formData.email,
           password: formData.password,

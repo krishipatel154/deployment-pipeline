@@ -7,7 +7,7 @@ from datetime import datetime
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-    profile_pic: Optional[str] = None  # Will be filled with S3 URL after upload
+    profile_pic: Optional[str] = None  
 
 
 class UserOut(BaseModel):

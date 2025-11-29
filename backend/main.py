@@ -50,9 +50,9 @@ app.add_middleware(
 # SIGNUP WITH OPTIONAL PROFILE PICTURE (S3)
 # ──────────────────────────────────────────────────────────────
 @app.post(
-        "/signup", 
-        response_model=UserOut, 
-        status_code=status.HTTP_201_CREATED
+    "/signup", 
+    response_model=UserOut, 
+    status_code=status.HTTP_201_CREATED
 )
 async def signup(
     email: str = Form(...),
@@ -60,7 +60,7 @@ async def signup(
     profile_pic: UploadFile = File(None),   # ← Optional file upload
     db: AsyncSession = Depends(get_db)
 ):
-#Create the Pydantic model instance(profile_pic will be None or S3 URL later)
+
     user_in = UserCreate(email=email, password=password)
 
     db_user = await create_user(db, user_in, profile_pic_file=profile_pic)
@@ -77,10 +77,7 @@ async def signup(
 async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     user = await get_user_by_email(db, data.email)
 
-    if not user or not verify_password(
-        data.password, 
-        user.hashed_password
-    ):
+    if not user or not verify_password(data.password, user.hashed_password):
         raise HTTPException(
             status_code=401, 
             detail="Invalid email or password"

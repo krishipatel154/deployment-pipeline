@@ -37,8 +37,6 @@ app.add_middleware(
         "http://65.2.121.160:8000",
         "http://3.110.118.71:8000",
         "http://3.110.118.71:5173"
-        # Add your real domain later, e.g.:
-        # "https://yourdomain.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],

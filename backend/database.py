@@ -36,10 +36,12 @@ AsyncSessionLocal = sessionmaker(
     expire_on_commit=False
 )
 
+
 # Dependency for FastAPI
 async def get_db():
     async with AsyncSessionLocal() as session:
         yield session
+
 
 # Optional: create tables on startup (useful for dev)
 async def init_db():

@@ -57,7 +57,11 @@ if "rds.amazonaws.com" in DATABASE_URL:
     connect_args = {"ssl": ssl_context}
 
 # Create async engine
-engine = create_async_engine(DATABASE_URL, echo=True, connect_args=connect_args)
+engine = create_async_engine(
+    DATABASE_URL, 
+    echo=True, 
+    connect_args=connect_args
+)
 
 # Async session factory
 AsyncSessionLocal = sessionmaker(
@@ -66,10 +70,12 @@ AsyncSessionLocal = sessionmaker(
     expire_on_commit=False,
 )
 
+
 # Dependency to use in FastAPI routes
 async def get_db():
     async with AsyncSessionLocal() as session:
         yield session
+
 
 # Function to create tables on startup
 async def create_tables():

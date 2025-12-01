@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from models.user import User
 from schemas.user import UserCreate
-from utils import hash_password
+from utils.auth import hash_password
 from utils.s3 import upload_to_s3
 from fastapi import UploadFile
 

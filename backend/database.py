@@ -58,8 +58,8 @@ if "rds.amazonaws.com" in DATABASE_URL:
 
 # Create async engine
 engine = create_async_engine(
-    DATABASE_URL, 
-    echo=True, 
+    DATABASE_URL,
+    echo=True,
     connect_args=connect_args
 )
 

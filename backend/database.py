@@ -7,6 +7,7 @@ from models.user import Base
 
 load_dotenv()
 
+# change database url
 db_url = os.getenv("DATABASE_URL")
 if db_url is None:
     raise ValueError("DATABASE_URL is missing in environment")

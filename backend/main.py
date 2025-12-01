@@ -9,7 +9,7 @@ from crud.user import create_user  # ← now accepts profile_pic_file
 from contextlib import asynccontextmanager
 from schemas.user import LoginRequest, TokenResponse
 from crud.user import get_user_by_email
-from utils import verify_password, create_access_token
+from utils.auth import verify_password, create_access_token
 
 
 @asynccontextmanager

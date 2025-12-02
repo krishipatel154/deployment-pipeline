@@ -34,7 +34,8 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
         "http://13.202.225.101:5173",
-        "http://13.202.225.101:8000"
+        "http://13.202.225.101:8000",
+        "http://13.202.225.101"
         # Add your real domain later, e.g.:
         # "https://yourdomain.com"
     ],

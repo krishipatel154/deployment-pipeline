@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 5. Expose the port your Python app runs on (e.g., Flask/Django default)
-# EXPOSE 8000
+EXPOSE 8000
 
 # This CMD runs Uvicorn for production:
 # 1. 'main:app': Your application entry point (module:application_instance)

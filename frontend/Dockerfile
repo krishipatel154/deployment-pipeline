@@ -13,6 +13,11 @@ COPY . .
 
 RUN npm run build 
 
-EXPOSE 5173
+# NGINX will serve the build files
+FROM nginx:stable-alpine
+COPY --from=build /app/dist /var/www/frontend
+COPY ../nginx/default.conf /etc/nginx/conf.d/default.conf
 
-CMD ["npm", "run", "preview"]
+# EXPOSE 5173
+
+# CMD ["npm", "run", "preview"]

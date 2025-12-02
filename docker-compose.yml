@@ -13,12 +13,6 @@ services:
       - "8000:8000" # Map host port 5000 to container port 5000
     depends_on:
       - db # Ensure the database starts before the app
-    # environment:
-    #   # These environment variables are critical for your Python app to connect to the DB
-    #   - DB_HOST=db
-    #   - DB_NAME=mydatabase
-    #   - DB_USER=myuser
-    #   - DB_PASSWORD=mypassword
 
   frontend:
     build: ./frontend
@@ -27,6 +21,18 @@ services:
     ports:
       - "5173:5173"
     depends_on: 
+      - backend
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/dist:/var/www/frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
       - backend
 
   # 2. Database Service (PostgreSQL)

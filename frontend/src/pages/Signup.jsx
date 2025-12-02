@@ -52,7 +52,7 @@ export default function Signup() {
 
     try {
       const response = await axios.post(
-        "http://13.233.199.200:8000/signup",
+        "http://13.202.225.101:8000/signup",
         data,
         {
           headers: {

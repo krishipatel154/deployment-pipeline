@@ -10,7 +10,10 @@ from contextlib import asynccontextmanager
 from schemas.user import LoginRequest, TokenResponse
 from crud.user import get_user_by_email
 from utils.auth import verify_password, create_access_token
-
+from fastapi import FastAPI, Request, Response
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from metrics import REQUEST_COUNT, REQUEST_LATENCY
+import time
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,6 +47,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next):
+    start = time.time()
+    response = await call_next(request)
+    latency = time.time() - start
+
+    REQUEST_COUNT.labels(
+        method=request.method,
+        endpoint=request.url.path,
+        http_status=response.status_code
+    ).inc()
+
+    REQUEST_LATENCY.labels(
+        endpoint=request.url.path
+    ).observe(latency)
+
+    return response
+
+@app.get("/metrics")
+def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 # ──────────────────────────────────────────────────────────────
 # SIGNUP WITH OPTIONAL PROFILE PICTURE (S3)

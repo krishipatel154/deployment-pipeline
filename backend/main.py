@@ -1,6 +1,15 @@
 # main.py
-from fastapi import FastAPI, Depends, HTTPException, status, File
-from fastapi import UploadFile, Form
+from fastapi import (
+    FastAPI,
+    Depends,
+    HTTPException,
+    status,
+    File,
+    UploadFile,
+    Form,
+    Request,
+    Response,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db, create_tables
@@ -10,6 +19,9 @@ from contextlib import asynccontextmanager
 from schemas.user import LoginRequest, TokenResponse
 from crud.user import get_user_by_email
 from utils.auth import verify_password, create_access_token
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from metrics import REQUEST_COUNT, REQUEST_LATENCY
+import time
 
 
 @asynccontextmanager
@@ -43,6 +55,30 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next):
+    start = time.time()
+    response = await call_next(request)
+    latency = time.time() - start
+
+    REQUEST_COUNT.labels(
+        method=request.method,
+        endpoint=request.url.path,
+        http_status=response.status_code
+    ).inc()
+
+    REQUEST_LATENCY.labels(
+        endpoint=request.url.path
+    ).observe(latency)
+
+    return response
+
+
+@app.get("/metrics")
+def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 # ──────────────────────────────────────────────────────────────
